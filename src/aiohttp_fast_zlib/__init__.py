@@ -36,8 +36,14 @@ TARGETS = [
 ]
 
 _PATCH_WEBSOCKET_WRITER = False
+_USE_NATIVE_ZLIB_BACKEND = False
 
-if _AIOHTTP_VERSION >= (3, 11):
+# Check if aiohttp has native set_zlib_backend support (3.12+)
+if _AIOHTTP_VERSION >= (3, 12):
+    from aiohttp import set_zlib_backend
+
+    _USE_NATIVE_ZLIB_BACKEND = True
+elif _AIOHTTP_VERSION >= (3, 11):
     _PATCH_WEBSOCKET_WRITER = True
 else:
     TARGETS.append("http_websocket")
@@ -51,6 +57,26 @@ def enable() -> None:
             ", performance will be degraded."
         )
         return
+
+    if _USE_NATIVE_ZLIB_BACKEND:
+        set_zlib_backend(best_zlib)
+        return
+    # Use patching for older versions
+    _patch_modules()
+
+
+def disable() -> None:
+    """Disable fast zlib and restore the original zlib."""
+    if _USE_NATIVE_ZLIB_BACKEND:
+        # Use native aiohttp 3.12+ API
+        set_zlib_backend(zlib_original)
+        return
+    # Use patching for older versions
+    _unpatch_modules()
+
+
+def _patch_modules() -> None:
+    """Patch aiohttp modules to use best_zlib."""
     for location in TARGETS:
         try:
             importlib.import_module(f"aiohttp.{location}")
@@ -64,8 +90,8 @@ def enable() -> None:
             mod.zlib = best_zlib  # type: ignore[attr-defined]
 
 
-def disable() -> None:
-    """Disable fast zlib and restore the original zlib."""
+def _unpatch_modules() -> None:
+    """Unpatch aiohttp modules to use original zlib."""
     for location in TARGETS:
         if module := getattr(aiohttp, location, None):
             module.zlib = zlib_original
