@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.3.0 (2025-06-07)
+
+### Features
+
+
+- Aiohttp 3.12 support (#56) ([`98717b3`](https://github.com/Bluetooth-Devices/aiohttp-fast-zlib/commit/98717b3997613ea1afd81cec026bc2d7bc327764))
+
+
 ## v0.2.3 (2025-02-22)
 
 ### Bug fixes
