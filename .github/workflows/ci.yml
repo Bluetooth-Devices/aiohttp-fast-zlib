@@ -78,11 +78,18 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: "poetry"
           allow-prereleases: true
+      - name: Cache poetry venv
+        id: cache-venv
+        uses: actions/cache@v5.0.5
+        with:
+          path: .venv
+          key: venv-v1-${{ runner.os }}-py${{ steps.setup-python.outputs.python-version }}-aiohttp${{ matrix.aiohttp_version }}-${{ hashFiles('poetry.lock', 'pyproject.toml') }}
       - name: Install Dependencies
+        if: steps.cache-venv.outputs.cache-hit != 'true'
         run: poetry install --all-extras
         shell: bash
       - name: "Install specific aiohttp version"
-        if: matrix.aiohttp_version != 'latest'
+        if: steps.cache-venv.outputs.cache-hit != 'true' && matrix.aiohttp_version != 'latest'
         run: poetry add "aiohttp==${{ matrix.aiohttp_version }}"
         shell: bash
       - name: Test with Pytest
