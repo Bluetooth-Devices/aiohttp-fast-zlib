@@ -14,6 +14,11 @@ try:
 except ImportError:
     from zlib_ng import zlib_ng as expected_zlib
 
+if (3, 11) <= aiohttp_fast_zlib._AIOHTTP_VERSION < (3, 12):
+    from aiohttp._websocket import writer
+if aiohttp_fast_zlib._AIOHTTP_VERSION >= (3, 12):
+    from aiohttp.compression_utils import ZLibBackend
+
 
 @pytest.mark.skipif(
     aiohttp_fast_zlib._AIOHTTP_VERSION >= (3, 11),
@@ -38,8 +43,6 @@ def test_enable_disable_pre_311():
 )
 def test_enable_disable_311():
     """Test enable/disable for aiohttp 3.11.x."""
-    from aiohttp._websocket import writer
-
     assert writer.zlib is zlib_original
     aiohttp_fast_zlib.enable()
     assert writer.zlib is expected_zlib
@@ -57,8 +60,6 @@ def test_enable_disable_311():
 )
 def test_enable_disable_when_all_missing_311():
     """Test enable/disable for aiohttp 3.11.x when all fast libs are missing."""
-    from aiohttp._websocket import writer
-
     with patch.object(aiohttp_fast_zlib, "best_zlib", zlib_original):
         assert writer.zlib is zlib_original
         aiohttp_fast_zlib.enable()
@@ -113,8 +114,6 @@ def test_enable_disable_when_all_missing():
 )
 def test_enable_disable_312_plus():
     """Test enable/disable for aiohttp 3.12+ with native set_zlib_backend."""
-    from aiohttp.compression_utils import ZLibBackend
-
     # Test enable
     aiohttp_fast_zlib.enable()
     assert ZLibBackend._zlib_backend is expected_zlib
@@ -138,8 +137,6 @@ def test_enable_disable_312_plus():
 )
 def test_enable_disable_when_all_missing_312_plus():
     """Test enable/disable for aiohttp 3.12+ when all fast libs are missing."""
-    from aiohttp.compression_utils import ZLibBackend
-
     # Store the original backend
     original_backend = ZLibBackend._zlib_backend
 
