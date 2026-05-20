@@ -160,8 +160,6 @@ def test_compression_roundtrip_312_plus():
     # object was installed, not that it actually works. The library promises a
     # *drop-in* replacement, so verify output from the fast backend round trips
     # through the stdlib zlib (and vice versa).
-    from aiohttp.compression_utils import ZLibBackend
-
     data = b"the quick brown fox jumps over the lazy dog " * 256
 
     try:
@@ -201,8 +199,6 @@ def test_compression_roundtrip_pre_312():
     # assert object identity; this proves the patched backend actually produces
     # zlib-compatible output. ``compression_utils`` is patched on every <3.12
     # path, so it is the common surface to exercise.
-    import aiohttp.compression_utils
-
     data = b"the quick brown fox jumps over the lazy dog " * 256
 
     try:
