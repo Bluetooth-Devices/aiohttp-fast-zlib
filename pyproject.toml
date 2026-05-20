@@ -27,7 +27,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.10"
-aiohttp = ">=3.9.0"
+aiohttp = ">=3.13.5"
 isal = {version = ">=1.6.1", optional = true}
 zlib_ng = {version = ">=0.4.3", optional = true}
 
