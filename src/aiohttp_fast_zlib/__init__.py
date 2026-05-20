@@ -29,7 +29,6 @@ except ImportError:
 TARGETS = [
     "compression_utils",
     "http_writer",
-    "http_writer",
     "http_parser",
     "multipart",
     "web_response",
