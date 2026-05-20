@@ -45,6 +45,7 @@ version_variables = [
     "src/aiohttp_fast_zlib/__init__.py:__version__",
 ]
 build_command = "pip install poetry && poetry build"
+allow_zero_version = true
 
 [tool.semantic_release.changelog]
 exclude_commit_patterns = [
