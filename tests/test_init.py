@@ -188,3 +188,38 @@ def test_compression_roundtrip_312_plus():
     compressor = ZLibBackend.compressobj(wbits=15)
     compressed = compressor.compress(data) + compressor.flush()
     assert zlib_original.decompress(compressed) == data
+
+
+@pytest.mark.skipif(
+    aiohttp_fast_zlib._AIOHTTP_VERSION >= (3, 12),
+    reason="Only the module-patching path applies below aiohttp 3.12",
+)
+def test_compression_roundtrip_pre_312():
+    """Patched backend output must be zlib-compatible on the <3.12 patching path."""
+    # On older aiohttp the library swaps the ``zlib`` reference on each target
+    # module instead of using a native backend hook. The existing tests only
+    # assert object identity; this proves the patched backend actually produces
+    # zlib-compatible output. ``compression_utils`` is patched on every <3.12
+    # path, so it is the common surface to exercise.
+    import aiohttp.compression_utils
+
+    data = b"the quick brown fox jumps over the lazy dog " * 256
+
+    try:
+        aiohttp_fast_zlib.enable()
+        assert aiohttp.compression_utils.zlib is expected_zlib
+
+        # Compress with the fast backend, decompress with stdlib zlib.
+        compressed = aiohttp.compression_utils.zlib.compress(data)
+        assert zlib_original.decompress(compressed) == data
+
+        # Reverse direction: stdlib output decompresses through the backend.
+        stdlib_compressed = zlib_original.compress(data)
+        assert aiohttp.compression_utils.zlib.decompress(stdlib_compressed) == data
+    finally:
+        aiohttp_fast_zlib.disable()
+
+    # After disable the stdlib backend is restored and still round trips.
+    assert aiohttp.compression_utils.zlib is zlib_original
+    compressed = aiohttp.compression_utils.zlib.compress(data)
+    assert zlib_original.decompress(compressed) == data
