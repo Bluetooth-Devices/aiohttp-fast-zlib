@@ -148,3 +148,43 @@ def test_enable_disable_when_all_missing_312_plus():
         # Test disable - should not change backend either
         aiohttp_fast_zlib.disable()
         assert ZLibBackend._zlib_backend is original_backend
+
+
+@pytest.mark.skipif(
+    aiohttp_fast_zlib._AIOHTTP_VERSION < (3, 12),
+    reason="Only works with aiohttp >= 3.12",
+)
+def test_compression_roundtrip_312_plus():
+    """Fast backend output must be zlib-compatible on the 3.12+ native path."""
+    # Asserting on the private ``_zlib_backend`` attribute only proves the
+    # object was installed, not that it actually works. The library promises a
+    # *drop-in* replacement, so verify output from the fast backend round trips
+    # through the stdlib zlib (and vice versa).
+    from aiohttp.compression_utils import ZLibBackend
+
+    data = b"the quick brown fox jumps over the lazy dog " * 256
+
+    try:
+        aiohttp_fast_zlib.enable()
+        # Fast backend is selected and reports itself via the public name.
+        assert ZLibBackend._zlib_backend is expected_zlib
+        assert ZLibBackend.name == expected_zlib.__name__
+
+        # Compress with the fast backend, decompress with stdlib zlib.
+        compressor = ZLibBackend.compressobj(wbits=15)
+        compressed = compressor.compress(data) + compressor.flush()
+        assert zlib_original.decompress(compressed) == data
+
+        # Reverse direction: stdlib output decompresses through the backend.
+        stdlib_compressed = zlib_original.compress(data)
+        decompressor = ZLibBackend.decompressobj(wbits=15)
+        restored = decompressor.decompress(stdlib_compressed) + decompressor.flush()
+        assert restored == data
+    finally:
+        aiohttp_fast_zlib.disable()
+
+    # After disable the stdlib backend is restored and still round trips.
+    assert ZLibBackend._zlib_backend is zlib_original
+    compressor = ZLibBackend.compressobj(wbits=15)
+    compressed = compressor.compress(data) + compressor.flush()
+    assert zlib_original.decompress(compressed) == data
