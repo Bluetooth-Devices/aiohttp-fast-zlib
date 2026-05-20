@@ -50,11 +50,10 @@ Enable [isal](https://github.com/pycompression/python-isal) or [zlib-ng](https:/
 
 ```python
 
-import aiohttp_zlib_fast
+import aiohttp_fast_zlib
 
 # isal is preferred over zlib_ng if it is available
-aiohttp_zlib_fast.enable()
-aiohttp_zlib_fast.enable()
+aiohttp_fast_zlib.enable()
 ```
 
 ## Contributors ✨
