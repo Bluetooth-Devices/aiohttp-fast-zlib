@@ -154,7 +154,7 @@ def test_enable_disable_when_all_missing_312_plus():
     aiohttp_fast_zlib._AIOHTTP_VERSION < (3, 12),
     reason="Only works with aiohttp >= 3.12",
 )
-def test_compression_roundtrip_312_plus():
+def test_compression_roundtrip_312_plus() -> None:
     """Fast backend output must be zlib-compatible on the 3.12+ native path."""
     # Asserting on the private ``_zlib_backend`` attribute only proves the
     # object was installed, not that it actually works. The library promises a
@@ -192,7 +192,7 @@ def test_compression_roundtrip_312_plus():
     aiohttp_fast_zlib._AIOHTTP_VERSION >= (3, 12),
     reason="Only the module-patching path applies below aiohttp 3.12",
 )
-def test_compression_roundtrip_pre_312():
+def test_compression_roundtrip_pre_312() -> None:
     """Patched backend output must be zlib-compatible on the <3.12 patching path."""
     # On older aiohttp the library swaps the ``zlib`` reference on each target
     # module instead of using a native backend hook. The existing tests only
