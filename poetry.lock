@@ -1096,4 +1096,4 @@ zlib-ng = ["zlib_ng"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10"
-content-hash = "e8e10a7db58ab9b172c4fc527fdf3a7fb33c9afbbd10fca6a3d568153922dc61"
+content-hash = "90b6705ebdedbf840dff0233f2162422f65ba6833d1d2a2bf83dbab6fadcf976"
