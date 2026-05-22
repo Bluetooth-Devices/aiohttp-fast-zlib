@@ -56,6 +56,12 @@ import aiohttp_fast_zlib
 aiohttp_fast_zlib.enable()
 ```
 
+To restore the original `zlib` (for example, in test teardown), call `disable`:
+
+```python
+aiohttp_fast_zlib.disable()
+```
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
