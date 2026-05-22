@@ -35,7 +35,7 @@
 
 Use the fastest installed zlib compatible library with aiohttp
 
-zlib is be a bottleneck for aiohttp, especially for websocket connections. `aiohttp-fast-zlib` replaces usage of `zlib` in `aiohttp` with `isal` or `zlib-ng` which is a drop-in faster replacement in most cases. Be sure to read the [isal](https://github.com/pycompression/python-isal) documentation and the [zlib-ng](https://github.com/pycompression/python-zlib-ng) documentation.
+zlib can be a bottleneck for aiohttp, especially for websocket connections. `aiohttp-fast-zlib` replaces usage of `zlib` in `aiohttp` with `isal` or `zlib-ng` which is a drop-in faster replacement in most cases. Be sure to read the [isal](https://github.com/pycompression/python-isal) documentation and the [zlib-ng](https://github.com/pycompression/python-zlib-ng) documentation.
 
 ## Installation
 
