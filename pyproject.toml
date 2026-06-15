@@ -32,7 +32,7 @@ isal = {version = ">=1.8.0", optional = true}
 zlib_ng = {version = ">=0.4.3", optional = true}
 
 [tool.poetry.group.dev.dependencies]
-pytest = ">=9.0.3,<10"
+pytest = ">=9.1.0,<10"
 pytest-cov = ">=7.1.0,<8"
 
 [tool.poetry.extras]
