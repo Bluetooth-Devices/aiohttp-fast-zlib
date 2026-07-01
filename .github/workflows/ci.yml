@@ -18,7 +18,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v6
         with:
           python-version: 3.x
@@ -65,9 +65,9 @@ jobs:
           - "latest" # Latest version (3.12+)
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up uv
-        uses: astral-sh/setup-uv@v8.1.0
+        uses: astral-sh/setup-uv@v8.2.0
         with:
           enable-cache: true
       - name: Install poetry
@@ -81,7 +81,7 @@ jobs:
           allow-prereleases: true
       - name: Cache poetry venv
         id: cache-venv
-        uses: actions/cache@v5.0.5
+        uses: actions/cache@v6.1.0
         with:
           path: .venv
           key: venv-v1-${{ runner.os }}-py${{ steps.setup-python.outputs.python-version }}-aiohttp${{ matrix.aiohttp_version }}-${{ hashFiles('poetry.lock', 'pyproject.toml') }}
@@ -97,7 +97,7 @@ jobs:
         run: poetry run pytest --cov-report=xml
         shell: bash
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
@@ -112,7 +112,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           ref: ${{ github.ref }}
@@ -141,7 +141,7 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           ref: ${{ github.ref }}
